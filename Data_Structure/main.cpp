@@ -115,7 +115,6 @@ void Vector()
 	cVecInt.push_back(0);
 	cVecInt.push_back(1);
 
-	cVecInt[1] = 5;
 	cout << "1번째 인덱스 요소 : " << cVecInt[1] << endl;
 	
 	cIter = cVecInt.begin();
@@ -137,6 +136,23 @@ void Vector()
 	cout << *cIter << endl;
 	cIter = cVecInt.erase(cIter);
 	cout << *cIter << endl;
+
+	cout << "=========================" << endl;
+
+	for (cIter = cVecInt.begin(); cIter != cVecInt.end(); ++cIter)
+	{
+		cout << *cIter << endl;
+	}
+
+	cout << "=========================" << endl;
+
+	cIter = cVecInt.find(5);
+	cVecInt.insert(cIter, 4);
+
+	for (cIter = cVecInt.begin(); cIter != cVecInt.end(); ++cIter)
+	{
+		cout << *cIter << endl;
+	}
 }
 
 void Stack()

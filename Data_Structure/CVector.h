@@ -13,15 +13,15 @@ public:
 	void push_back(const T& _data);
 	size_t size() { return m_iCount; }
 	size_t capacity() { return m_iCapacity; }
-	void resize(size_t _i);
+	void reallocate(size_t _i);
 	T& front() { return m_pData[0]; }
 
 	class iterator;
 	iterator begin() { return iterator(this, &m_pData[0]); }
-	iterator end() { return iterator(this, nullptr); }
+	iterator end() { return iterator(this, &m_pData[m_iCount]); }
 	iterator find(const T& _data);
 	iterator erase(iterator& _iter);
-	void insert(iterator* _iter, const T& _data);
+	void insert(iterator& _iter, const T& _data);
 
 public:
 	T& operator [] (size_t _index) { return m_pData[_index]; }
@@ -128,7 +128,7 @@ inline void CVector<T>::push_back(const T& _data)
 {
 	if (m_iCount >= m_iCapacity)
 	{
-		resize(m_iCapacity * 2);
+		reallocate(m_iCapacity * 2);
 	}
 
 	m_pData[m_iCount] = _data;
@@ -136,7 +136,7 @@ inline void CVector<T>::push_back(const T& _data)
 }
 
 template<typename T>
-inline void CVector<T>::resize(size_t _i)
+inline void CVector<T>::reallocate(size_t _i)
 {
 	if (_i <= m_iCapacity)
 		return;
@@ -172,6 +172,7 @@ inline typename CVector<T>::iterator CVector<T>::erase(iterator& _iter)
 	if (_iter == end())
 		assert(nullptr);
 
+	// 현재 가리키고 있는 인덱스 주소 - 시작 인덱스 주소
 	size_t index = _iter.m_pData - m_pData;
 
 	for (size_t i = index; i < m_iCount; ++i)
@@ -185,6 +186,22 @@ inline typename CVector<T>::iterator CVector<T>::erase(iterator& _iter)
 }
 
 template<typename T>
-inline void CVector<T>::insert(iterator* _iter, const T& _data)
+inline void CVector<T>::insert(iterator& _iter, const T& _data)
 {
+	if (m_iCount + 1 >= m_iCapacity)
+	{
+		reallocate(m_iCapacity * 2);
+	}
+
+	size_t index = _iter.m_pData - m_pData;
+
+	T temp = m_pData[m_iCount - 1];
+
+	for (size_t i = m_iCount - 1; i > index; --i)
+	{
+		m_pData[i] = m_pData[i - 1];
+	}
+
+	m_pData[index] = _data;
+	push_back(temp); // push back 할 때 ++m_iCount
 }
