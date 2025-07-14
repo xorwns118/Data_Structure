@@ -12,6 +12,7 @@ CLinkedList::CLinkedList()
 
 CLinkedList::~CLinkedList()
 {
+	ReleaseList();
 }
 
 void CLinkedList::PushBack(int _i)

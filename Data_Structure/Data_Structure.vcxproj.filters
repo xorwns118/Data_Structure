@@ -19,16 +19,25 @@
     <Filter Include="MyStructure\CLInkedLIst">
       <UniqueIdentifier>{5b2c5fad-e235-49a9-8cec-ae5013378501}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyStructure\CVector">
+      <UniqueIdentifier>{387da657-98c5-4d12-b525-cedc6ea9c1fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CLinkedList.cpp">
       <Filter>MyStructure\CLInkedLIst</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="CVector.cpp">
+      <Filter>MyStructure\CVector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CLinkedList.h">
       <Filter>MyStructure\CLInkedLIst</Filter>
+    </ClInclude>
+    <ClInclude Include="CVector.h">
+      <Filter>MyStructure\CVector</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
