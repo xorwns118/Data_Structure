@@ -28,7 +28,8 @@ int main()
 	//LinkedList();
 	//Array();
 	//Vector();
-	Stack();
+	//Stack();
+	Queue();
 	return 0;
 }
 
@@ -171,7 +172,7 @@ void Stack()
 	// 이미 존재하는 객체를 복사하거나 이동하여 추가
 	// 복사/이동으로 인해 단순 자료형이나 이미 생성된 객체를 추가할 때 효율적
 	sInt.push(1); // 데이터 추가 
-	result = sInt.top(); // 현재 존재하는 요소 중 최상단 요소(제일 마지막에 들어온 요소)의 index, empty 이면 -1
+	result = sInt.top(); // 현재 존재하는 요소 중 최상단 요소(제일 마지막에 들어온 요소), empty 이면 -1
 	sInt.pop(); // stack의 top 데이터 삭제
 	bool isEmpty = sInt.empty(); // 아무것도 없는지
 	// sInt.size(); // 현재 stack size
@@ -210,8 +211,54 @@ void Stack()
 	cout << "empty : " << boolalpha << iStack->Empty() << endl;
 }
 
+#include <queue>
+#include "CQueue.h"
+
 void Queue()
 {
+	queue<int> qInt;
+
+	// queue.emplace();
+	qInt.push(1);
+	int a = qInt.front(); // 제일 앞의 요소
+	a = qInt.back(); // 제일 뒤의 요소
+	qInt.pop(); // 맨 앞 요소 제거
+	a = qInt.size(); // 큐 사이즈
+	bool b = qInt.empty(); // 비어있는가
+
+	CQueue<int>* iQueue = new CQueue<int>;
+
+	iQueue->Push(1);
+	cout << "front : " << iQueue->Front() << endl;
+	cout << "back : " << iQueue->Back() << endl;
+	cout << "size : " << iQueue->Size() << endl;
+
+	iQueue->Pop();
+	cout << "pop -> size : " << iQueue->Size() << endl;
+
+	for (int i = 0; i < 10; ++i)
+	{
+		iQueue->Push(i);
+	}
+
+	cout << "push 0 ~ 9, size : " << iQueue->Size() << endl;
+	cout << "front : " << iQueue->Front() << endl;
+	cout << "back : " << iQueue->Back() << endl;
+	
+	size_t size = iQueue->Size();
+
+	for (size_t i = 0; i < size; ++i)
+	{
+		cout << "remove front : " << iQueue->Front() << endl;
+		iQueue->Pop();
+	}
+
+	cout << "size : " << iQueue->Size() << endl;
+}
+
+void Deque()
+{
+
 }
 
 void PriorityQueue()

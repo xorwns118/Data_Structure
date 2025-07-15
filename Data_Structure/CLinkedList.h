@@ -1,16 +1,16 @@
 #pragma once
 
-struct tNode
+struct tListNode
 {
 	int		iData;
-	tNode*	pNextNode;
+	tListNode*	pNextNode;
 
 };
 
 class CLinkedList
 {
 private:
-	tNode*			m_pHeadNode;	// 시작 주소
+	tListNode*		m_pHeadNode;	// 시작 주소
 	unsigned int	m_iSize;		// 리스트 크기
 
 public:

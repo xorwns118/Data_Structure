@@ -177,12 +177,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CLinkedList.cpp" />
+    <ClCompile Include="CQueue.cpp" />
     <ClCompile Include="CStack.cpp" />
     <ClCompile Include="CVector.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CLinkedList.h" />
+    <ClInclude Include="CQueue.h" />
     <ClInclude Include="CStack.h" />
     <ClInclude Include="CVector.h" />
   </ItemGroup>

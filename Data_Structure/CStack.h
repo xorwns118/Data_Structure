@@ -16,7 +16,7 @@ private:
 	size_t			m_iSize;
 
 public:
-	void Push(T& _value);
+	void Push(const T& _value);
 	void Pop();
 	T& Top();
 	size_t Size() { return m_iSize; }
@@ -44,7 +44,7 @@ inline CStack<T>::~CStack()
 }
 
 template<typename T>
-inline void CStack<T>::Push(T& _value)
+inline void CStack<T>::Push(const T& _value)
 {
 	tStackNode<T>* newNode = new tStackNode<T>;
 
@@ -63,6 +63,8 @@ inline void CStack<T>::Push(T& _value)
 template<typename T>
 inline void CStack<T>::Pop()
 {
+	// LIFO
+
 	if (Empty())
 		return;
 

@@ -19,7 +19,7 @@ void CLinkedList::PushBack(int _i)
 {
 	if (m_pHeadNode == nullptr)
 	{
-		tNode* node = new tNode;
+		tListNode* node = new tListNode;
 		node->iData = _i;
 		node->pNextNode = nullptr;
 
@@ -27,14 +27,14 @@ void CLinkedList::PushBack(int _i)
 	}
 	else
 	{
-		tNode* pCurNode = m_pHeadNode;
+		tListNode* pCurNode = m_pHeadNode;
 
 		while (pCurNode->pNextNode != nullptr)
 		{
 			pCurNode = pCurNode->pNextNode;
 		}
 
-		tNode* newNode = new tNode;
+		tListNode* newNode = new tListNode;
 		newNode->iData = _i;
 		newNode->pNextNode = nullptr;
 
@@ -46,8 +46,8 @@ void CLinkedList::PushBack(int _i)
 
 void CLinkedList::PushFront(int _i)
 {
-	tNode* originHead = m_pHeadNode;
-	tNode* newNode = new tNode;
+	tListNode* originHead = m_pHeadNode;
+	tListNode* newNode = new tListNode;
 
 	newNode->iData = _i;
 	newNode->pNextNode = originHead;
@@ -59,7 +59,7 @@ void CLinkedList::PushFront(int _i)
 
 void CLinkedList::PrintList()
 {
-	tNode* pCurNode = m_pHeadNode;
+	tListNode* pCurNode = m_pHeadNode;
 
 	if (pCurNode == nullptr)
 		assert(nullptr);
@@ -73,11 +73,11 @@ void CLinkedList::PrintList()
 
 void CLinkedList::ReleaseList()
 {
-	tNode* pCurNode = m_pHeadNode;
+	tListNode* pCurNode = m_pHeadNode;
 
 	while (pCurNode != nullptr)
 	{
-		tNode* pDelNode = pCurNode;
+		tListNode* pDelNode = pCurNode;
 		pCurNode = pCurNode->pNextNode;
 		delete pDelNode;
 	}
