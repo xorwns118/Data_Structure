@@ -177,11 +177,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CLinkedList.cpp" />
+    <ClCompile Include="CStack.cpp" />
     <ClCompile Include="CVector.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CLinkedList.h" />
+    <ClInclude Include="CStack.h" />
     <ClInclude Include="CVector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

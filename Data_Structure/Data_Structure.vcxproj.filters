@@ -22,6 +22,9 @@
     <Filter Include="MyStructure\CVector">
       <UniqueIdentifier>{387da657-98c5-4d12-b525-cedc6ea9c1fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyStructure\CStack">
+      <UniqueIdentifier>{e365b4bf-a629-44ca-9b86-40dcbec1c349}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CLinkedList.cpp">
@@ -31,6 +34,9 @@
     <ClCompile Include="CVector.cpp">
       <Filter>MyStructure\CVector</Filter>
     </ClCompile>
+    <ClCompile Include="CStack.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CLinkedList.h">
@@ -38,6 +44,9 @@
     </ClInclude>
     <ClInclude Include="CVector.h">
       <Filter>MyStructure\CVector</Filter>
+    </ClInclude>
+    <ClInclude Include="CStack.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

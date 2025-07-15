@@ -27,7 +27,8 @@ int main()
 {
 	//LinkedList();
 	//Array();
-	Vector();
+	//Vector();
+	Stack();
 	return 0;
 }
 
@@ -155,8 +156,58 @@ void Vector()
 	}
 }
 
+#include <stack>
+#include "CStack.h"
+
 void Stack()
 {
+	// LIFO
+	stack<int> sInt;
+	stack<int> swapInt;
+
+	int result = 0;
+
+	// push
+	// 이미 존재하는 객체를 복사하거나 이동하여 추가
+	// 복사/이동으로 인해 단순 자료형이나 이미 생성된 객체를 추가할 때 효율적
+	sInt.push(1); // 데이터 추가 
+	result = sInt.top(); // 현재 존재하는 요소 중 최상단 요소(제일 마지막에 들어온 요소)의 index, empty 이면 -1
+	sInt.pop(); // stack의 top 데이터 삭제
+	bool isEmpty = sInt.empty(); // 아무것도 없는지
+	// sInt.size(); // 현재 stack size
+	// sInt.swap(stack); // 다른 stack 과 swap
+
+	for (int i = 10; i >= 0; --i)
+	{
+		sInt.push(i);
+	}
+
+	cout << "stack size : " << sInt.size() << endl;
+	cout << "stack top : " << sInt.top() << endl;
+	
+	// emplace
+	// 인자를 받아 새 객체를 직접 생성해 추가
+	// 직접 생성으로 인해 복잡하거나 큰 객체를 직접 생성할 때 효율적
+	// sInt.emplace();
+
+	CStack<int>* iStack = new CStack<int>;
+
+	for (int i = 10; i > 0; --i)
+	{
+		iStack->Push(i);
+	}
+
+	cout << "stack size : " << iStack->Size() << endl;
+	cout << "stack top : " << iStack->Top() << endl;
+
+	size_t sSize = iStack->Size();
+
+	for (size_t i = 0; i < sSize; ++i)
+	{
+		iStack->Pop();
+	}
+
+	cout << "empty : " << boolalpha << iStack->Empty() << endl;
 }
 
 void Queue()
