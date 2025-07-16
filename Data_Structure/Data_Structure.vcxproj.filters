@@ -28,6 +28,9 @@
     <Filter Include="MyStructure\CQueue">
       <UniqueIdentifier>{01d5f030-1c4e-4afc-8869-dbc0c503ded1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MyStructure\CDeque">
+      <UniqueIdentifier>{14c0fa2f-dec4-4bb7-ba53-44d44244086a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CLinkedList.cpp">
@@ -43,6 +46,9 @@
     <ClCompile Include="CQueue.cpp">
       <Filter>MyStructure\CQueue</Filter>
     </ClCompile>
+    <ClCompile Include="CDeque.cpp">
+      <Filter>MyStructure\CDeque</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CLinkedList.h">
@@ -56,6 +62,9 @@
     </ClInclude>
     <ClInclude Include="CQueue.h">
       <Filter>MyStructure\CQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="CDeque.h">
+      <Filter>MyStructure\CDeque</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

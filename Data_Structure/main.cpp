@@ -12,6 +12,8 @@ void Vector();
 void Stack();
 // Queue
 void Queue();
+// Deque
+void Deque();
 // Priority Queue
 void PriorityQueue();
 // Heap
@@ -29,7 +31,8 @@ int main()
 	//Array();
 	//Vector();
 	//Stack();
-	Queue();
+	//Queue();
+	Deque();
 	return 0;
 }
 
@@ -220,10 +223,10 @@ void Queue()
 
 	// queue.emplace();
 	qInt.push(1);
-	int a = qInt.front(); // 제일 앞의 요소
-	a = qInt.back(); // 제일 뒤의 요소
+	// qInt.front(); // 제일 앞의 요소
+	// qInt.back(); // 제일 뒤의 요소
 	qInt.pop(); // 맨 앞 요소 제거
-	a = qInt.size(); // 큐 사이즈
+	// qInt.size(); // 큐 사이즈
 	bool b = qInt.empty(); // 비어있는가
 
 	CQueue<int>* iQueue = new CQueue<int>;
@@ -256,8 +259,51 @@ void Queue()
 	cout << "size : " << iQueue->Size() << endl;
 }
 
+#include <deque>
+#include "CDeque.h"
+
 void Deque()
 {
+	deque<int> dInt;
+
+	dInt.push_front(1); // 1
+	dInt.push_back(2);  // 1 2
+	
+	deque<int>::iterator dIter = dInt.begin();
+
+	dInt.insert(++dIter, 3); // 1 3 2
+	// dInt.insert(dIter + 1, 4); // 1 3 4 2
+
+	cout << "size : " << dInt.size() << endl;
+
+	for (dIter = dInt.begin(); dIter != dInt.end(); ++dIter)
+	{
+		cout << dInt[1] << endl;
+	}
+
+	dInt.pop_back();
+	dInt.pop_front();
+
+	cout << "front : " << dInt.front() << endl; // 3
+	cout << "back : " << dInt.back() << endl; // 3
+
+	dIter = dInt.begin();
+	dInt.erase(dIter);
+
+	cout << "erase, size : " << dInt.size() << endl;
+
+	CDeque<int> iDeque;
+	iDeque.PushBack(3);
+	iDeque.PushFront(2);
+	iDeque.PushFront(1);
+	iDeque.PushBack(4);
+
+	iDeque.PopBack();
+	iDeque.PopFront();
+	iDeque.PopFront();
+
+	iDeque.Resize(10);
+	iDeque.Resize(15, 5);
 
 }
 

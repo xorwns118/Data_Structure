@@ -89,6 +89,7 @@ inline void CQueue<T>::Pop()
 	// 삭제하려는 노드가 이미 HeadNode 일 때
 	if(m_tHeadNode != nullptr)
 		m_tHeadNode->pPrevNode = nullptr;
+
 	delete delNode;
 
 	--m_iSize;

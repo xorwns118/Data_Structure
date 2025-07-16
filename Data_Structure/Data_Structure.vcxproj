@@ -176,6 +176,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CDeque.cpp" />
     <ClCompile Include="CLinkedList.cpp" />
     <ClCompile Include="CQueue.cpp" />
     <ClCompile Include="CStack.cpp" />
@@ -183,6 +184,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CDeque.h" />
     <ClInclude Include="CLinkedList.h" />
     <ClInclude Include="CQueue.h" />
     <ClInclude Include="CStack.h" />
