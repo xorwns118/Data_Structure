@@ -41,8 +41,6 @@ public:
 	void Resize(const size_t _i);				// 크기를 _i 로 변경, 더 커졌을 때에는 비어있는 원소를 0으로 변경
 	void Resize(const size_t _i, const T _value); // 크기를 _i 로 변경, 더 커졌을 때 비어있는 원소를 _value 로 변경
 	const size_t Size() { return m_iSize; }		// 원소의 개수 반환
-	void Insert(const int _idx, const T _value); // _idx 위치에 _value 삽입 
-	void Insert(const int _idx, const int _count, const T _value); // _idx 위치에 _count 개의 _value 삽입
 	bool Empty() { return m_iSize == 0; }		// 원소가 비어있으면 true
 	
 	class iterator;
@@ -51,13 +49,12 @@ public:
 	iterator RBegin() { return iterator(this, m_pFrontList, m_iSize - 1); }		// reverse begin()
 	iterator REnd() { return iterator(this, m_pFrontList , -1); }				// reverse end()
 	iterator Erase(iterator _iter); // _iter 가 가리키는 원소 제거, 앞 뒤 원소 개수 판단 후 적은 쪽 원소들을 당겨 채움, 제거한곳 iterator 반환
+	iterator Insert(const iterator _iter, const T _value);						// _idx 위치에 _value 삽입, 삽입 위치 반환
+	iterator Insert(const iterator _iter, const int _count, const T _value);	// _idx 위치에 _count 개의 _value 삽입
 
 public:
-	const T& operator [] (int _idx)
+	T& operator [] (int _idx)
 	{
-		if (m_iSize <= _idx || _idx < 0)
-			assert(nullptr);
-
 		tDequeList<T>* pSearch = m_pFrontList;
 
 		int index = pSearch->iFrontIdx + _idx;
@@ -110,7 +107,7 @@ public:
 			return *this;
 		}
 
-		const T& operator * ()
+		T& operator * ()
 		{
 			return *m_pValue;
 		}
@@ -302,9 +299,21 @@ inline void CDeque<T>::Assign(const int _count, const T _value)
 }
 
 template<typename T>
-inline const T& CDeque<T>::At(const int idx)
+inline const T& CDeque<T>::At(const int _idx)
 {
-	// TODO: 여기에 return 문을 삽입합니다.
+	if (m_iSize <= _idx || _idx < 0)
+		assert(nullptr);
+
+	tDequeList<T>* pSearch = m_pFrontList;
+
+	int index = pSearch->iFrontIdx + _idx;
+
+	for (int i = 0; i < index / g_iChunkSize; ++i)
+	{
+		pSearch = pSearch->pNextList;
+	}
+
+	return pSearch->tValue[index % g_iChunkSize];
 }
 
 template<typename T>
@@ -522,13 +531,114 @@ inline void CDeque<T>::Resize(const size_t _i, const T _value)
 }
 
 template<typename T>
-inline void CDeque<T>::Insert(const int _idx, const T _value)
+inline typename CDeque<T>::iterator CDeque<T>::Insert(const iterator _iter, const T _value)
 {
+	tDequeList<T>* pList = m_pBackList;
+
+	if (m_iSize <= 1)
+	{
+		PushBack(_value);
+		return iterator(this, pList, _iter.m_iIdx);
+	}
+
+	// 뒷 요소가 더 적으면 뒤로 밀어냄
+	if (_iter.m_iIdx > m_iSize / 2)
+	{
+		PushBack(*m_pTailValue);
+
+		for (int i = (int)m_iSize - 1; i >= _iter.m_iIdx; --i)
+		{
+			(*this)[i] = (*this)[i - 1];
+		}
+
+		(*this)[_iter.m_iIdx] = _value;
+	}
+	else // 앞 요소가 더 적으면 앞으로 당김
+	{
+		PushFront(*m_pHeadValue);
+
+		for (int i = 1; i < _iter.m_iIdx; i++)
+		{
+			(*this)[i] = (*this)[i + 1];
+		}
+
+		(*this)[_iter.m_iIdx] = _value;
+	}
+
+	pList = m_pFrontList;
+
+	int iListIndex = (pList->iFrontIdx + _iter.m_iIdx) / g_iChunkSize - 1;
+
+	for (int i = 0; i < iListIndex; ++i)
+	{
+		pList = pList->pNextList;
+	}
+
+	return iterator(this, pList, _iter.m_iIdx);
 }
 
 template<typename T>
-inline void CDeque<T>::Insert(const int _idx, int _count, const T _value)
+inline typename CDeque<T>::iterator CDeque<T>::Insert(const iterator _iter, int _count, const T _value)
 {
+	tDequeList<T>* pList = m_pBackList;
+
+	if (m_iSize <= 1)
+	{
+		for (int i = 0; i < _count; ++i)
+		{
+			PushBack(_value);
+		}
+
+		return iterator(this, pList, _iter.m_iIdx);
+	}
+
+	// (왼쪽보다 적을 때)
+	// 뒷 요소가 더 적으면 뒤로 밀어냄
+	if (_iter.m_iIdx > m_iSize / 2)
+	{
+		for (int i = 0; i < _count; ++i)
+		{
+			PushBack(*m_pTailValue);
+		}
+
+		for (int i = (int)m_iSize - 1; i >= _iter.m_iIdx; --i)
+		{
+			(*this)[i] = (*this)[i - _count];
+		}
+
+		for (int i = 0; i < _count; ++i)
+		{
+			(*this)[_iter.m_iIdx + i] = _value;
+		}
+	}
+	else // 앞 요소가 더 적으면 앞으로 당김
+	{
+		for (int i = 0; i < _count; ++i)
+		{
+			PushFront(*m_pHeadValue);
+		}
+
+		for (int i = 1; i < _iter.m_iIdx; i++)
+		{
+			(*this)[i] = (*this)[i + _count];
+		}
+
+		for (int i = _iter.m_iIdx; i > _iter.m_iIdx - _count; --i)
+		{
+			(*this)[i] = _value;
+		}
+	}
+
+	pList = m_pFrontList;
+
+	int iListIndex = (pList->iFrontIdx + _iter.m_iIdx) / g_iChunkSize - 1;
+
+	for (int i = 0; i < iListIndex; ++i)
+	{
+		pList = pList->pNextList;
+	}
+
+	return iterator(this, pList, _iter.m_iIdx);
 }
 
 template<typename T>

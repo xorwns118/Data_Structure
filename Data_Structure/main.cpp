@@ -338,12 +338,17 @@ void Deque()
 
 	CDeque<int>::iterator queIter = que.Begin();
 
-	for (; queIter != que.End(); ++queIter)
+	/*for (; queIter != que.End(); ++queIter)
 	{
 		cout << *queIter << endl;
-	}
+	}*/
 
-	int a = que[30];
+	for (int i = 0; i < 20; ++i)
+	{
+		++queIter;
+	}
+	
+	que.Insert(queIter, 5, 100);
 }
 
 void PriorityQueue()
