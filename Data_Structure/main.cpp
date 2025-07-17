@@ -287,6 +287,13 @@ void Deque()
 	cout << "front : " << dInt.front() << endl; // 3
 	cout << "back : " << dInt.back() << endl; // 3
 
+	dInt.push_back(1);
+	dInt.push_back(2);
+
+	dIter = dInt.begin();
+	++dIter;
+	--dIter;
+
 	dIter = dInt.begin();
 	dInt.erase(dIter);
 
@@ -310,12 +317,35 @@ void Deque()
 	iDeque2.PushBack(3);
 	iDeque2.PushFront(5);*/
 
-	CDeque<int> iDeque3(30, 1);
+	/*CDeque<int> iDeque3(30, 1);
 	iDeque3.PushBack(3);
 	iDeque3.PushFront(5);
 	iDeque3.Clear();
 	iDeque3.PushBack(55);
 
+	CDeque<int>::iterator deqIter = iDeque3.Begin();
+	++deqIter;
+	deqIter = iDeque3.End();
+	deqIter = iDeque3.RBegin();
+	deqIter = iDeque3.REnd();*/
+
+	CDeque<int> que;
+
+	for (size_t i = 0; i < 64; ++i)
+	{
+		que.PushBack(i);
+	}
+
+	CDeque<int>::iterator queIter = que.Begin();
+
+	for (; queIter != que.End(); ++queIter)
+	{
+		cout << *queIter << endl;
+	}
+
+	queIter = que.End();
+	queIter = que.RBegin();
+	queIter = que.REnd();
 }
 
 void PriorityQueue()
