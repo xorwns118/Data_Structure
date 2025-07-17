@@ -292,7 +292,7 @@ void Deque()
 
 	cout << "erase, size : " << dInt.size() << endl;
 
-	CDeque<int> iDeque;
+	/*CDeque<int> iDeque;
 	iDeque.PushBack(3);
 	iDeque.PushFront(2);
 	iDeque.PushFront(1);
@@ -303,7 +303,18 @@ void Deque()
 	iDeque.PopFront();
 
 	iDeque.Resize(10);
-	iDeque.Resize(15, 5);
+	iDeque.Resize(15, 5);*/
+
+	/*CDeque<int> iDeque2(40);
+
+	iDeque2.PushBack(3);
+	iDeque2.PushFront(5);*/
+
+	CDeque<int> iDeque3(30, 1);
+	iDeque3.PushBack(3);
+	iDeque3.PushFront(5);
+	iDeque3.Clear();
+	iDeque3.PushBack(55);
 
 }
 

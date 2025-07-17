@@ -25,6 +25,7 @@ private:
 	tDequeList<T>*	m_pFrontList;	// 제일 앞쪽에 할당된 블록
 	tDequeList<T>*	m_pBackList;	// 제일 뒤쪽에 할당된 블록
 	size_t			m_iSize;		// 원소 개수
+	size_t			m_iListCount;	// 만들어진 리스트 개수
 
 public:
 	void Assign(int _count, const T _value); // _value 값으로 _count개의 원소 할당
@@ -138,6 +139,8 @@ inline void CDeque<T>::make_new_list_back()
 
 	m_pBackList->pNextList = newList;
 	m_pBackList = newList;
+
+	++m_iListCount;
 }
 
 template<typename T>
@@ -153,35 +156,38 @@ inline void CDeque<T>::make_new_list_front()
 
 	m_pFrontList->pPrevList = newList;
 	m_pFrontList = newList;
+
+	++m_iListCount;
 }
 
 template<typename T>
 inline CDeque<T>::CDeque()
 	: m_pFrontList(nullptr)
 	, m_pBackList(nullptr)
+	, m_pHeadValue(nullptr)
+	, m_pTailValue(nullptr)
 	, m_iSize(0)
+	, m_iListCount(0)
 {
-	init_list();;
+	init_list();
 }
 
 template<typename T>
 inline CDeque<T>::CDeque(const size_t _i)
 	: m_pFrontList(nullptr)
 	, m_pBackList(nullptr)
-	, m_iSize(_i)
+	, m_pHeadValue(nullptr)
+	, m_pTailValue(nullptr)
+	, m_iSize(0)
+	, m_iListCount(0)
 {
-	init_list();;
-
-	while (_i > g_iChunkSize)
+	init_list();
+	
+	for (size_t i = 0; i < _i; ++i)
 	{
-		for (size_t i = 0; i < _i; ++i)
-		{
-			PushBack(0);
-		}
+		T t = {};
 
-		_i -= 32;
-
-		make_new_list_back();
+		PushBack(t);
 	}
 }
 
@@ -189,20 +195,16 @@ template<typename T>
 inline CDeque<T>::CDeque(const size_t _i, const T _value)
 	: m_pFrontList(nullptr)
 	, m_pBackList(nullptr)
-	, m_iSize(_i)
+	, m_pHeadValue(nullptr)
+	, m_pTailValue(nullptr)
+	, m_iSize(0)
+	, m_iListCount(0)
 {
 	init_list();
 
-	while (_i > g_iChunkSize)
+	for (size_t i = 0; i < _i; ++i)
 	{
-		for (size_t i = 0; i < _i; ++i)
-		{
-			PushBack(_value);
-		}
-
-		_i -= g_iChunkSize;
-
-		make_new_list_back();
+		PushBack(_value);
 	}
 }
 
@@ -210,8 +212,20 @@ template<typename T>
 inline CDeque<T>::CDeque(const CDeque<T>* _copy)
 	: m_pFrontList(_copy->m_pFrontList)
 	, m_pBackList(_copy->m_pBackList)
+	, m_pHeadValue(_copy->m_pHeadValue)
+	, m_pTailValue(_copy->m_pTailValue)
 	, m_iSize(_copy->m_iSize)
+	, m_iListCount(_copy->m_iListCount)
 {
+	// 현재 얕은 복사로, 같은 주소를 공유하고 있음.
+	// 깊은 복사로 직접 초기화 이후 새로운 deque 객체와 값까지 똑같이 복사할 수 있는 깊은 복사가 필요함
+
+	//init_list();
+
+	//for (int i = 0; i < m_iSize; ++i)
+	//{
+	//	// 이 부분에 같은 값을 복사할 수 있도록 구현
+	//}
 }
 
 template<typename T>
@@ -233,34 +247,63 @@ inline const T& CDeque<T>::At(const int idx)
 template<typename T>
 inline void CDeque<T>::Clear()
 {
+	size_t size = m_iSize;
+
+	// 모든 원소를 제거
+	for (size_t i = 0; i < size; ++i)
+	{
+		PopBack();
+	}
+	
+	// 할당되어있는 제일 처음 블록으로 넘어감
+	while (m_pFrontList->pPrevList != nullptr)
+	{
+		m_pFrontList = m_pFrontList->pPrevList;
+	}
+
+	// FrontList 를 할당되어있는 블록들의 중간지점으로 변경함
+	for (size_t i = 0; i < m_iListCount / 2; ++i)
+	{
+		m_pFrontList = m_pFrontList->pNextList;
+	}
+
+	m_pBackList = m_pFrontList;
 }
 
 template<typename T>
 inline void CDeque<T>::PushFront(const T& _value)
 {
+	// 제일 앞의 리스트가 꽉 찬 경우
 	if (m_pFrontList->bIsFull)
 	{
-		make_new_list_front();
+		if (m_pFrontList->pPrevList == nullptr) // 리스트의 앞부분에 할당해놓은 리스트가 없는경우
+			make_new_list_front();
+		else // 할당해놓은 리스트가 이미 있는 경우
+			m_pFrontList = m_pFrontList->pPrevList;
 	}
 
-	tDequeList<T>& target = *m_pFrontList;
+	if (m_pFrontList->bIsEmpty)
+	{
+		m_pFrontList->bIsEmpty = false;
 
-	if (target.bIsEmpty)
-		target.bIsEmpty = false;
+		// 앞부터 채워졌던 리스트가 비어있을 경우
+		m_pFrontList->iFrontIdx = g_iChunkSize;
+		m_pFrontList->iBackIdx = g_iChunkSize - 1;
+	}
 
-	--target.iFrontIdx;
+	--m_pFrontList->iFrontIdx;
 
-	target.tValue[target.iFrontIdx] = _value;
+	m_pFrontList->tValue[m_pFrontList->iFrontIdx] = _value;
 
-	if (target.iFrontIdx == 0)
-		target.bIsFull = true;
+	if (m_pFrontList->iFrontIdx == 0)
+		m_pFrontList->bIsFull = true;
 
-	m_pHeadValue = &target.tValue[target.iFrontIdx];
+	m_pHeadValue = &m_pFrontList->tValue[m_pFrontList->iFrontIdx];
+
+	if (m_pTailValue == nullptr)
+		m_pTailValue = &m_pFrontList->tValue[m_pFrontList->iFrontIdx];
 
 	++m_iSize;
-
-	if (m_iSize == 1)
-		m_pTailValue = &target.tValue[target.iFrontIdx];
 }
 
 template<typename T>
@@ -269,60 +312,64 @@ inline void CDeque<T>::PopFront()
 	if (m_iSize == 0)
 		assert(nullptr);
 
-	tDequeList<T>& target = *m_pFrontList;
+	++m_pFrontList->iFrontIdx;
 
-	++target.iFrontIdx;
+	// HeadValue 갱신
+	if (m_pFrontList->iFrontIdx == g_iChunkSize)
+	{
+		m_pFrontList->bIsEmpty = true;
+		m_pFrontList = m_pFrontList->pNextList;
+
+		m_pHeadValue = &m_pFrontList->pNextList->tValue[0];
+	}
+	else
+	{
+		m_pHeadValue = &m_pFrontList->tValue[m_pFrontList->iFrontIdx];
+	}
 
 	--m_iSize;
 
 	if (m_iSize == 0)
 	{
-		target.bIsEmpty = true;
-
 		m_pHeadValue = nullptr;
 		m_pTailValue = nullptr;
-
-		return;
-	}
-
-	// HeadValue 갱신
-	if (target.iFrontIdx == g_iChunkSize)
-	{
-		m_pFrontList = target.pNextList;
-		m_pHeadValue = &target.pNextList->tValue[0];
-	}
-	else
-	{
-		m_pHeadValue = &target.tValue[target.iFrontIdx];
 	}
 }
 
 template<typename T>
 inline void CDeque<T>::PushBack(const T& _value)
 {
+	// 제일 뒤의 리스트가 꽉 찬 경우 
 	if (m_pBackList->bIsFull)
 	{
-		make_new_list_back();
+		if (m_pBackList->pNextList == nullptr) // 리스트의 뒷부분에 할당해놓은 리스트가 없는경우
+			make_new_list_back();
+		else // 할당해놓은 리스트가 이미 있는 경우
+			m_pBackList = m_pBackList->pNextList;
 	}
 
-	tDequeList<T>& target = *m_pBackList;
+	if (m_pBackList->bIsEmpty)
+	{
+		m_pBackList->bIsEmpty = false;
 
-	if (target.bIsEmpty)
-		target.bIsEmpty = false;
+		// 뒤부터 채워진졌던 리스트가 비어있을 경우, ex) 뒤부터 채워진 리스트가 초기화 되었을 때
+		m_pBackList->iFrontIdx = 0;
+		m_pBackList->iBackIdx = -1;
+	}
 
-	++target.iBackIdx;
+	++m_pBackList->iBackIdx;
 
-	target.tValue[target.iBackIdx] = _value;
+	m_pBackList->tValue[m_pBackList->iBackIdx] = _value;
 	
-	if (target.iBackIdx == 31)
-		target.bIsFull = true;
+	if (m_pBackList->iBackIdx == g_iChunkSize - 1)
+		m_pBackList->bIsFull = true;
 
-	m_pTailValue = &target.tValue[target.iBackIdx];
+	if (m_pHeadValue == nullptr)
+		m_pHeadValue = &m_pBackList->tValue[m_pBackList->iBackIdx];
+
+	m_pTailValue = &m_pBackList->tValue[m_pBackList->iBackIdx];
 
 	++m_iSize;
-
-	if (m_iSize == 1)
-		m_pHeadValue = &target.tValue[target.iBackIdx];
 }
 
 template<typename T>
@@ -331,31 +378,32 @@ inline void CDeque<T>::PopBack()
 	if (m_iSize == 0)
 		assert(nullptr);
 
-	tDequeList<T>& target = *m_pBackList;
+	if (m_pBackList->bIsFull)
+	{
+		m_pBackList->bIsFull = false;
+	}
 
-	--target.iBackIdx;
+	--m_pBackList->iBackIdx;
+
+	// TailValue 갱신
+	if (m_pBackList->iBackIdx == -1)
+	{
+		m_pBackList->bIsEmpty = true;
+		m_pBackList = m_pBackList->pPrevList;
+
+		m_pTailValue = &m_pBackList->pPrevList->tValue[g_iChunkSize - 1];
+	}
+	else
+	{
+		m_pTailValue = &m_pBackList->tValue[m_pBackList->iBackIdx];
+	}
 
 	--m_iSize;
 
 	if (m_iSize == 0)
 	{
-		target.bIsEmpty = true;
-
 		m_pHeadValue = nullptr;
 		m_pTailValue = nullptr;
-
-		return;
-	}
-
-	// TailValue 갱신
-	if (target.iBackIdx == -1)
-	{
-		m_pBackList = target.pPrevList;
-		m_pTailValue = &target.pPrevList->tValue[g_iChunkSize - 1];
-	}
-	else
-	{
-		m_pTailValue = &target.tValue[target.iBackIdx];
 	}
 }
 
