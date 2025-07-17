@@ -53,7 +53,22 @@ public:
 	iterator Erase(iterator _iter); // _iter 가 가리키는 원소 제거, 앞 뒤 원소 개수 판단 후 적은 쪽 원소들을 당겨 채움, 제거한곳 iterator 반환
 
 public:
-	const T& operator [] (int _idx) {} // 유효범위 점검하지 않고 idx번째 원소 참조
+	const T& operator [] (int _idx)
+	{
+		if (m_iSize <= _idx || _idx < 0)
+			assert(nullptr);
+
+		tDequeList<T>* pSearch = m_pFrontList;
+
+		int index = pSearch->iFrontIdx + _idx;
+
+		for (int i = 0; i < index / g_iChunkSize; ++i)
+		{
+			pSearch = pSearch->pNextList;
+		}
+
+		return pSearch->tValue[index % g_iChunkSize];
+	}// 유효범위 점검하지 않고 idx번째 원소 참조
 	
 private:
 	void init_list();
@@ -110,49 +125,6 @@ public:
 			return !(*this == _other);
 		}
 
-		T& operator [] (int _idx)
-		{
-			if (m_pDeque->Size() <= _idx || _idx < 0)
-				assert(nullptr);
-
-			int index = find_index(_idx);
-			
-			return m_pCurList->tValue[index];
-		}
-
-	private:
-		int find_index(int _i)
-		{
-			// FrontList 의 iFrontIdx 기준
-			tDequeList<T>* pSearch = m_pDeque->m_pFrontList;
-
-			int startIdx = pSearch->iFrontIdx;
-			
-			int index = _i + startIdx;
-			int count = 0;
-
-			if (index > g_iChunkSize)
-			{
-				index -= startIdx;
-				++count;
-			}
-			else
-			{
-				return index;
-			}
-
-			while (index > g_iChunkSize)
-			{
-				index -= g_iChunkSize - count;
-				pSearch = pSearch->pNextList;
-
-				// 리스트가 넘어갈 때 마다 넘어간 만큼의 count를 더 빼야 0번째 인덱스로 나옴
-				++count;
-			}
-
-			return index;
-		}
-
 	public:
 		iterator()
 			: m_pDeque(nullptr)
@@ -177,9 +149,16 @@ public:
 				return;
 			}
 
-			int index = find_index(_idx);
+			tDequeList<T>* pSearch = m_pDeque->m_pFrontList;
 
-			m_pValue = &m_pCurList->tValue[index];
+			int index = pSearch->iFrontIdx + _idx;
+
+			for (int i = 0; i < index / g_iChunkSize; ++i)
+			{
+				pSearch = pSearch->pNextList;
+			}
+
+			m_pValue = &m_pCurList->tValue[index % g_iChunkSize];
 		}
 
 		~iterator()

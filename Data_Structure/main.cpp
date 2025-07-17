@@ -343,9 +343,7 @@ void Deque()
 		cout << *queIter << endl;
 	}
 
-	queIter = que.End();
-	queIter = que.RBegin();
-	queIter = que.REnd();
+	int a = que[30];
 }
 
 void PriorityQueue()
