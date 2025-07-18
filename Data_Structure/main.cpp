@@ -269,6 +269,8 @@ void Deque()
 	dInt.push_front(1); // 1
 	dInt.push_back(2);  // 1 2
 	
+	dInt.assign(5, 100);
+
 	deque<int>::iterator dIter = dInt.begin();
 
 	dInt.insert(++dIter, 3); // 1 3 2
@@ -331,7 +333,7 @@ void Deque()
 
 	CDeque<int> que;
 
-	for (size_t i = 0; i < 64; ++i)
+	for (size_t i = 0; i < 20; ++i)
 	{
 		que.PushBack(i);
 	}
@@ -343,12 +345,16 @@ void Deque()
 		cout << *queIter << endl;
 	}*/
 
-	for (int i = 0; i < 20; ++i)
-	{
-		++queIter;
-	}
+	que.Assign(5, 3);
+	queIter = que.Begin();
+	//++(++(++(++queIter)));
+	//queIter = que.End();
+	//--(--(--(--queIter)));
+	que.Insert(++queIter, 10, 100);
+
+	que.Erase(queIter);
 	
-	que.Insert(queIter, 5, 100);
+	
 }
 
 void PriorityQueue()
