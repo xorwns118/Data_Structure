@@ -32,7 +32,8 @@ int main()
 	//Vector();
 	//Stack();
 	//Queue();
-	Deque();
+	//Deque();
+	PriorityQueue();
 	return 0;
 }
 
@@ -359,6 +360,21 @@ void Deque()
 
 void PriorityQueue()
 {
+	// 우선순위가 높은 요소부터 삭제 => 값이 큰 요소부터(최대힙)
+	priority_queue<int> pq;
+	// greater => 비교함수, sort, priority 에서 사용하게 되면 내림차순 적용(최소힙으로 동작)
+	priority_queue<int, vector<int>, greater<int>> pq2;
+	pq.push(1);
+	pq.push(2);
+	pq.push(10);
+	pq.push(4);
+	pq.push(5);
+
+	while(!pq.empty())
+	{
+		cout << pq.top() << endl;
+		pq.pop();
+	}
 }
 
 void Heap()
